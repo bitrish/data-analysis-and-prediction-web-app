@@ -13,7 +13,6 @@ from sklearn.metrics import accuracy_score
 from sklearn import model_selection
 
 st.title('The Data Analysis and Prediction Web App')
-st.image("hello.png")
 
 def main():
 	activities=['EDA','Visualisation','Model','About us']
