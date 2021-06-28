@@ -1,18 +1,42 @@
-import streamlit as st
+#importing all neccessary libraries
+
+import streamlit as st#for building the webapp
 import numpy as np
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
+import pandas as pd#for loading datasets
+import seaborn as sns#for plotting 
+import matplotlib.pyplot as plt#for plotting
+import time
+
+
+from sklearn.model_selection import train_test_split#for splitting the data sets ito training and test
+from sklearn import model_selection
+
+
+#for training the model on differnt algortihms
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
-from sklearn import model_selection
 
-st.title('The Data Analysis and Prediction Web App')
+
+
+#for calculating accuracy and making confusion matrix
+from sklearn.metrics import accuracy_score
+
+
+st.title('Data Analysis and Prediction ML webapp')
+
+progress=st.progress(0)
+for i in range(100):
+	time.sleep(0.01)
+	progress.progress(i+1)
+
+
+st.markdown("""
+:sunglasses:
+""")
+
 
 def main():
 	activities=['EDA','Visualisation','Model','About us']
@@ -126,7 +150,6 @@ def main():
 
 			y_pred=clf.predict(X_test)
 			st.write("Predictions:",y_pred)
-
 			accuracy=accuracy_score(y_test,y_pred)
 			st.write("Name of classifier:", classifier_name)
 			st.write("Accuracy:",accuracy)
