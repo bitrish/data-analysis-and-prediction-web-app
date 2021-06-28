@@ -27,10 +27,10 @@ from sklearn.metrics import accuracy_score
 
 st.title('Data Analysis and Prediction ML webapp')
 
-#progress=st.progress(0)
-#for i in range(100):
-#	time.sleep(0.01)
-#	progress.progress(i+1)
+progress=st.progress(0)
+for i in range(100):
+	time.sleep(0.01)
+	progress.progress(i+1)
 
 
 st.markdown("""
