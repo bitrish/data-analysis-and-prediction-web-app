@@ -5,12 +5,16 @@ import numpy as np
 import pandas as pd#for loading datasets
 import seaborn as sns#for plotting 
 import matplotlib.pyplot as plt#for plotting
+
+import missingno as msno
+
 import time
 
 
 
 from sklearn.model_selection import train_test_split#for splitting the data sets ito training and test
 from sklearn import model_selection
+from sklearn import datasets
 
 
 
@@ -24,7 +28,9 @@ from sklearn.linear_model import LogisticRegression
 
 
 #for calculating accuracy and making confusion matrix
+from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
+
 
 
 
@@ -58,11 +64,12 @@ def main():
         """)
 		st.warning("Only CSV formats datasets are allowed for now")
 		data=st.file_uploader("Upload Your Dataset",type=['csv'])
-
 		if data is not None:
 			st.success("Data has been loaded suceesfully")
 			df=pd.read_csv(data)
 			st.dataframe(df.head(10))
+			df1=df
+			msno.heatmap(df1)
 
 			if st.checkbox("Display Shape"):
 				st.write(df.shape)
@@ -75,17 +82,11 @@ def main():
 				df1=df[selected_columns]
 				st.dataframe(df1)
 
-			if st.checkbox("Display Summery"):
-				if df1.empty:
-					st.write(df.describe().T)
-				else:
-					st.write(df1.describe().T)
+
+			if st.checkbox("Display Count of Null values in column"):
+				st.write(df1.isnull().sum())
 				
-			if st.checkbox("Display Count of Null values in each column"):
-				if df1.empty:
-					st.write(df.isnull().sum())
-				else:
-					st.write(df1.isnull().sum())
+                
 
 			if st.checkbox("Display columns data types"):
 				if df1.empty:
@@ -93,11 +94,17 @@ def main():
 				else:
 					st.write(df1.dtypes)
 
-			if st.checkbox("Display correation between columns"):
-				if df1.empty():
-					st.write(df.corr())
+
+			if st.checkbox("Display Summery"):
+				if df1.empty:
+					st.write(df.describe().T)
 				else:
-					st.write(df1.corr())
+					st.write(df1.describe().T)
+				
+
+			if st.checkbox("Display correation between columns"):
+				st.write(df1.corr())
+
 
 
 
@@ -194,6 +201,9 @@ def main():
 			accuracy=accuracy_score(y_test,y_pred)
 			st.write("Name of classifier:", classifier_name)
 			st.write("Accuracy:",accuracy)
+			if st.checkbox("Build Confusion matrix"):
+				acc=confusion_matrix(y_test,y_pred)
+				acc
 
 
 
@@ -202,8 +212,12 @@ def main():
 
 #About app part
 	elif option=='About App📱':
-		st.write("dhhhgh")
+		st.write("gfgwrfr")
+		
 
+		
+
+            
 
 
 
