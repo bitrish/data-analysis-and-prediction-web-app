@@ -84,6 +84,9 @@ def main():
 
 			if st.checkbox("Display Count of Null values in column"):
 				st.write(df1.isnull().sum())
+				if st.checkbox("Visualise null values in columns"):
+					st.write(sns.heatmap(df1.isnull(),yticklabels=False,cbar=False,cmap='viridis'))
+					st.pyplot()
 				
                 
 
