@@ -62,7 +62,7 @@ def main():
 		st.markdown("""
 		## Exploratory Data Analysis
         """)
-		st.warning("Only CSV formats datasets are allowed for now")
+		st.warning("Only CSV formats datasets are supported for now")
 		data=st.file_uploader("Upload Your Dataset",type=['csv'])
 		if data is not None:
 			st.success("Data has been loaded suceesfully")
