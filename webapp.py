@@ -8,8 +8,10 @@ import matplotlib.pyplot as plt#for plotting
 import time
 
 
+
 from sklearn.model_selection import train_test_split#for splitting the data sets ito training and test
 from sklearn import model_selection
+
 
 
 #for training the model on differnt algortihms
@@ -25,8 +27,11 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 
 
-st.title('Data Analysis and Prediction ML webapp')
 
+st.title('Data Analysis and Prediction ML Webapp')
+
+
+#progress bar
 progress=st.progress(0)
 for i in range(100):
 	time.sleep(0.01)
@@ -37,38 +42,69 @@ st.markdown("""
 :sunglasses:
 """)
 
-
+#main function-streamlit structure design
 def main():
-	activities=['EDA','Visualisation','Model','About us']
+	activities=['EDA📈','Visualisation 📊','Model🛠','About App📱','Contact Us 📞']
 	option=st.sidebar.selectbox('Select Option:',activities)
 
-	if option=='EDA':
-		st.subheader("Exploratory Data Analysis")
-		data=st.file_uploader("Upload Your Dataset",type=['csv','xlsx','txt','json'])
+
+
+
+
+#EDA part
+	if option=='EDA📈':
+		st.markdown("""
+		## Exploratory Data Analysis
+        """)
+		st.warning("Only CSV formats datasets are allowed for now")
+		data=st.file_uploader("Upload Your Dataset",type=['csv'])
+
 		if data is not None:
 			st.success("Data has been loaded suceesfully")
 			df=pd.read_csv(data)
 			st.dataframe(df.head(10))
+
 			if st.checkbox("Display Shape"):
 				st.write(df.shape)
-			if st.checkbox("Display Columns"):
+
+			if st.checkbox("Display Columns Names"):
 				st.write(df.columns)
+
 			if st.checkbox("Select multiple columns"):
 				selected_columns=st.multiselect('Select prefered columns',df.columns)
 				df1=df[selected_columns]
 				st.dataframe(df1)
+
 			if st.checkbox("Display Summery"):
-				st.write(df.describe().T)
+				if df1.empty:
+					st.write(df.describe().T)
+				else:
+					st.write(df1.describe().T)
+				
+			if st.checkbox("Display Count of Null values in each column"):
+				if df1.empty:
+					st.write(df.isnull().sum())
+				else:
+					st.write(df1.isnull().sum())
 
-			if st.checkbox("Display Null values"):
-				st.write(df.isnull().sum())
-			if st.checkbox("Display thier data types"):
-				st.write(df.dtypes)
-			if st.checkbox("Display correation of various columns"):
-				st.write(df.corr())
+			if st.checkbox("Display columns data types"):
+				if df1.empty:
+					st.write(df.dtypes)
+				else:
+					st.write(df1.dtypes)
+
+			if st.checkbox("Display correation between columns"):
+				if df1.empty():
+					st.write(df.corr())
+				else:
+					st.write(df1.corr())
 
 
-	elif option=='Visualisation':
+
+
+
+#Viualisation part
+	elif option=='Visualisation 📊':
 		st.subheader("Data Visualisation")
 		data=st.file_uploader("Upload Your Dataset",type=['csv','xlsx','txt','json'])
 		if data is not None:
@@ -94,7 +130,12 @@ def main():
 				st.pyplot()
 
 
-	elif option=='Model':
+
+
+
+
+#model building part
+	elif option=='Model🛠':
 		st.subheader("Build your own model with different algorithms")
 		data=st.file_uploader("Upload Your Dataset",type=['csv','xlsx','txt','json'])
 		if data is not None:
@@ -159,14 +200,31 @@ def main():
 
 
 
-
-
-
-
-
-
-	elif option=='About us':
+#About app part
+	elif option=='About App📱':
 		st.write("dhhhgh")
+
+
+
+
+
+#Contact Us part
+	else:
+		st.write("dhhhgh")
+
+
+hide_streamlit_style = """
+            <style>
+            
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+
+
+
+
 
 if __name__ == '__main__':
 	main()
