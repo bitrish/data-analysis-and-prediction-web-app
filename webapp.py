@@ -6,7 +6,7 @@ import pandas as pd#for loading datasets
 import seaborn as sns#for plotting 
 import matplotlib.pyplot as plt#for plotting
 
-import missingno as msno
+
 
 import time
 
