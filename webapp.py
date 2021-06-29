@@ -69,7 +69,6 @@ def main():
 			df=pd.read_csv(data)
 			st.dataframe(df.head(10))
 			df1=df
-			msno.heatmap(df1)
 
 			if st.checkbox("Display Shape"):
 				st.write(df.shape)
