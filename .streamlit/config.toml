@@ -1,6 +1,9 @@
+[deprecation]
+showPyplotGlobalUse=False
 [theme]
 primaryColor="#e82453"
 backgroundColor="#3e3e43"
 secondaryBackgroundColor="#868c98"
 textColor="#f1f2f5"
 font="monospace"
+
