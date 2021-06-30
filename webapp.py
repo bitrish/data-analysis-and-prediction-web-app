@@ -33,7 +33,10 @@ from sklearn.metrics import accuracy_score
 
 
 
-
+#html_temp="""
+#<div style="background-color:grey">st.title('Data Analysis and Prediction ML Webapp')</div>
+#"""
+#st.markdown(html_temp,unsafe_allow_html=True)
 st.title('Data Analysis and Prediction ML Webapp')
 
 
@@ -47,7 +50,7 @@ for i in range(100):
 st.markdown("""
 :sunglasses:
 """)
-
+st.set_option('deprecation.showPyplotGlobalUse', False)
 #main function-streamlit structure design
 def main():
 	activities=['EDA📈','Visualisation 📊','Model🛠','About App📱','Contact Us 📞']
@@ -62,34 +65,46 @@ def main():
 		st.markdown("""
 		## Exploratory Data Analysis
         """)
-		st.warning("Only CSV formats datasets are supported for now")
+		st.info("Only CSV formats datasets are supported for now")
 		data=st.file_uploader("Upload Your Dataset",type=['csv'])
 		if data is not None:
 			st.success("Data has been loaded suceesfully")
 			df=pd.read_csv(data)
-			st.dataframe(df.head(10))
 			df1=df
 
+
+            #showing data
+			if st.checkbox("Show Dataset"):
+				number=st.number_input("No of rows to view",1,100000)
+				st.dataframe(df.head(number))
+
+
+            #showing shape of the data
 			if st.checkbox("Display Shape"):
 				st.write(df.shape)
 
+
+            #show column names
 			if st.checkbox("Display Columns Names"):
 				st.write(df.columns)
 
+
+            #select multipme columns
 			if st.checkbox("Select multiple columns"):
 				selected_columns=st.multiselect('Select prefered columns',df.columns)
 				df1=df[selected_columns]
 				st.dataframe(df1)
 
 
+            #null values count and plot
 			if st.checkbox("Display Count of Null values in column"):
 				st.write(df1.isnull().sum())
 				if st.checkbox("Visualise null values in columns"):
 					st.write(sns.heatmap(df1.isnull(),yticklabels=False,cbar=False,cmap='viridis'))
 					st.pyplot()
-				
                 
 
+            #show columns data types
 			if st.checkbox("Display columns data types"):
 				if df1.empty:
 					st.write(df.dtypes)
@@ -97,6 +112,14 @@ def main():
 					st.write(df1.dtypes)
 
 
+			#show value counts of target column
+			if st.checkbox("Show values counts of target column"):
+				st.warning("Make sure that your target/output variable is in the last column")
+				st.text("Counts")
+				st.write(df1.iloc[:,-1].value_counts())
+            	
+
+            #show the summery of dataset
 			if st.checkbox("Display Summery"):
 				if df1.empty:
 					st.write(df.describe().T)
@@ -104,6 +127,7 @@ def main():
 					st.write(df1.describe().T)
 				
 
+            #show the correlation of data columns
 			if st.checkbox("Display correation between columns"):
 				st.write(df1.corr())
 
