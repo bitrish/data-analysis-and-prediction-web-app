@@ -143,24 +143,73 @@ def main():
 		if data is not None:
 			st.success("Data has been loaded suceesfully")
 			df=pd.read_csv(data)
-			st.dataframe(df.head(10))
+			
 
+            #show dataset
+			if st.checkbox("Show Dataset"):
+				number=st.number_input("No of rows to view",1,100000)
+				st.dataframe(df.head(number))
+
+
+            #selecting columns
 			if st.checkbox('Select Multiple columns to plot'):
 				selected_columns=st.multiselect('Select your preffered coulmns',df.columns)
 				df1=df[selected_columns]
 				st.dataframe(df1)
+
+
+			#display heatmap
 			if st.checkbox('Display Heatmap'):
 				st.write(sns.heatmap(df1.corr(),vmax=1,square=True,annot=True,cmap='viridis'))
 				st.pyplot()
+
+
+			#display pair plot
 			if st.checkbox('Display Pairplot'):
 				st.write(sns.pairplot(df1,diag_kind='kde'))
 				st.pyplot()
+
+
+			#display pie chart
 			if st.checkbox('Display Pie Chart'):
 				all_columns=df.columns.to_list()
-				pie_columns=st.selectbox("Select Columns to Display",all_columns)
-				pieChart=df[pie_columns].value_counts().plot.pie(autopct='%1.1f%%')
-				st.write(pieChart)
-				st.pyplot()
+				pie_columns=st.selectbox("Select Column to Display",all_columns)
+				if st.button("Generate chart"):
+					st.success("Generating pie chart") 
+					pieChart=df[pie_columns].value_counts().plot.pie(autopct='%1.1f%%')
+					st.write(pieChart)
+					st.pyplot()
+				
+				
+			#display customisable plot
+			if st.checkbox('Display Customisable plots of your choice'):
+				all_column_names=df.columns.tolist()
+				type_of_plot=st.selectbox("Select type of plot",["area","bar","line","hist","box","kde"])
+				selected_columns_names=st.multiselect("Select columns to plot",all_column_names)
+				if st.button("Generate plot"):
+					st.success("Generating customisable plot of type {} for {}".format(type_of_plot,selected_columns_names))
+
+
+					#plot by streamlit
+					if type_of_plot=="area":
+						cust_data=df[selected_columns_names]
+						st.area_chart(cust_data)
+					elif type_of_plot=="bar":
+						cust_data=df[selected_columns_names]
+						st.bar_chart(cust_data)
+					elif type_of_plot=="line":
+						cust_data=df[selected_columns_names]
+						st.line_chart(cust_data)
+
+
+					#plot by seaborn/matplotlib
+					elif type_of_plot:
+						cust_plot=df[selected_columns_names].plot(kind=type_of_plot)
+						st.write(cust_plot)
+						st.pyplot()
+
+
+
 
 
 
