@@ -7,7 +7,6 @@ import seaborn as sns#for plotting
 import matplotlib.pyplot as plt#for plotting
 
 
-
 import time
 
 
@@ -30,6 +29,8 @@ from sklearn.linear_model import LogisticRegression
 #for calculating accuracy and making confusion matrix
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
+from pandas_profiling import ProfileReport
+from streamlit_pandas_profiling import st_profile_report
 
 
 
@@ -51,6 +52,9 @@ st.markdown("""
 :sunglasses:
 """)
 st.set_option('deprecation.showPyplotGlobalUse', False)
+
+
+
 #main function-streamlit structure design
 def main():
 	activities=['EDA📈','Visualisation 📊','Model🛠','About App📱','Contact Us 📞']
@@ -84,9 +88,12 @@ def main():
 				st.write(df.shape)
 
 
+
             #show column names
 			if st.checkbox("Display Columns Names"):
 				st.write(df.columns)
+
+
 
 
             #select multipme columns
@@ -99,6 +106,9 @@ def main():
             #null values count and plot
 			if st.checkbox("Display Count of Null values in column"):
 				st.write(df1.isnull().sum())
+				if st.checkbox("Display percentage of miising values in columns"):
+					missing_percentage=df1.isna().sum().sort_values(ascending=False)/len(df1)
+					st.write(missing_percentage)
 				if st.checkbox("Visualise null values in columns"):
 					st.write(sns.heatmap(df1.isnull(),yticklabels=False,cbar=False,cmap='viridis'))
 					st.pyplot()
@@ -130,6 +140,11 @@ def main():
             #show the correlation of data columns
 			if st.checkbox("Display correation between columns"):
 				st.write(df1.corr())
+
+			if st.checkbox("Create profile report"):
+				pr=ProfileReport(df1,explorative=True)
+				st.write("Pandas profiling report")
+				st_profile_report(pr)
 
 
 
@@ -207,11 +222,6 @@ def main():
 						cust_plot=df[selected_columns_names].plot(kind=type_of_plot)
 						st.write(cust_plot)
 						st.pyplot()
-
-
-
-
-
 
 
 
