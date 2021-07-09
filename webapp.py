@@ -29,8 +29,6 @@ from sklearn.linear_model import LogisticRegression
 #for calculating accuracy and making confusion matrix
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
-from pandas_profiling import ProfileReport
-from streamlit_pandas_profiling import st_profile_report
 
 
 
@@ -141,10 +139,10 @@ def main():
 			if st.checkbox("Display correation between columns"):
 				st.write(df1.corr())
 
-			if st.checkbox("Create profile report"):
+			#if st.checkbox("Create profile report"):
 				pr=ProfileReport(df1,explorative=True)
 				st.write("Pandas profiling report")
-				st_profile_report(pr)
+				st_profile_report(pr)#
 
 
 
