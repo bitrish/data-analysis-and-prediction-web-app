@@ -5,8 +5,6 @@ import numpy as np
 import pandas as pd#for loading datasets
 import seaborn as sns#for plotting 
 import matplotlib.pyplot as plt#for plotting
-
-
 import time
 
 
@@ -78,18 +76,18 @@ def main():
             #showing data
 			if st.checkbox("Show Dataset"):
 				number=st.number_input("No of rows to view",1,100000)
-				st.dataframe(df.head(number))
+				st.dataframe(df1.head(number))
 
 
             #showing shape of the data
 			if st.checkbox("Display Shape"):
-				st.write(df.shape)
+				st.write(df1.shape)
 
 
 
             #show column names
 			if st.checkbox("Display Columns Names"):
-				st.write(df.columns)
+				st.write(df1.columns)
 
 
 
@@ -97,7 +95,8 @@ def main():
             #select multipme columns
 			if st.checkbox("Select multiple columns"):
 				selected_columns=st.multiselect('Select prefered columns',df.columns)
-				df1=df[selected_columns]
+				if len(selected_columns)!=0:
+					df1=df[selected_columns]
 				st.dataframe(df1)
 
 
@@ -114,10 +113,7 @@ def main():
 
             #show columns data types
 			if st.checkbox("Display columns data types"):
-				if df1.empty:
-					st.write(df.dtypes)
-				else:
-					st.write(df1.dtypes)
+				st.write(df1.dtypes)
 
 
 			#show value counts of target column
@@ -152,22 +148,25 @@ def main():
 #Viualisation part
 	elif option=='Visualisation 📊':
 		st.subheader("Data Visualisation")
+		st.info("Only CSV formats datasets are supported for now")
 		data=st.file_uploader("Upload Your Dataset",type=['csv','xlsx','txt','json'])
 		if data is not None:
 			st.success("Data has been loaded suceesfully")
 			df=pd.read_csv(data)
+			df1=df
 			
 
             #show dataset
 			if st.checkbox("Show Dataset"):
 				number=st.number_input("No of rows to view",1,100000)
-				st.dataframe(df.head(number))
+				st.dataframe(df1.head(number))
 
 
             #selecting columns
 			if st.checkbox('Select Multiple columns to plot'):
 				selected_columns=st.multiselect('Select your preffered coulmns',df.columns)
-				df1=df[selected_columns]
+				if len(selected_columns)!=0:
+					df1=df[selected_columns]
 				st.dataframe(df1)
 
 
@@ -189,14 +188,14 @@ def main():
 				pie_columns=st.selectbox("Select Column to Display",all_columns)
 				if st.button("Generate chart"):
 					st.success("Generating pie chart") 
-					pieChart=df[pie_columns].value_counts().plot.pie(autopct='%1.1f%%')
+					pieChart=df1[pie_columns].value_counts().plot.pie(autopct='%1.1f%%')
 					st.write(pieChart)
 					st.pyplot()
 				
 				
 			#display customisable plot
 			if st.checkbox('Display Customisable plots of your choice'):
-				all_column_names=df.columns.tolist()
+				all_column_names=df1.columns.tolist()
 				type_of_plot=st.selectbox("Select type of plot",["area","bar","line","hist","box","kde"])
 				selected_columns_names=st.multiselect("Select columns to plot",all_column_names)
 				if st.button("Generate plot"):
@@ -205,19 +204,19 @@ def main():
 
 					#plot by streamlit
 					if type_of_plot=="area":
-						cust_data=df[selected_columns_names]
+						cust_data=df1[selected_columns_names]
 						st.area_chart(cust_data)
 					elif type_of_plot=="bar":
-						cust_data=df[selected_columns_names]
+						cust_data=df1[selected_columns_names]
 						st.bar_chart(cust_data)
 					elif type_of_plot=="line":
-						cust_data=df[selected_columns_names]
+						cust_data=df1[selected_columns_names]
 						st.line_chart(cust_data)
 
 
 					#plot by seaborn/matplotlib
 					elif type_of_plot:
-						cust_plot=df[selected_columns_names].plot(kind=type_of_plot)
+						cust_plot=df1[selected_columns_names].plot(kind=type_of_plot)
 						st.write(cust_plot)
 						st.pyplot()
 
@@ -226,22 +225,31 @@ def main():
 
 #model building part
 	elif option=='Model🛠':
-		st.subheader("Build your own model with different algorithms")
-		data=st.file_uploader("Upload Your Dataset",type=['csv','xlsx','txt','json'])
+		st.subheader("Build your own model with different classifiers")
+		st.info("Only CSV formats datasets are supported for now")
+		data=st.file_uploader("Upload Your Dataset",type=['csv'])
 		if data is not None:
 			st.success("Data has been loaded suceesfully")
 			df=pd.read_csv(data)
-			st.dataframe(df.head(10))
+			df1=df
+			#show dataset
+			if st.checkbox("Show Dataset"):
+				number=st.number_input("No of rows to view",1,100000)
+				st.dataframe(df1.head(number))
+
+
 			if st.checkbox('Select multiple columns '):
-				new_data=st.multiselect("Select yout preffered columns,Please select target column as the last columns",df.columns)
-				df1=df[new_data]
+				new_data=st.multiselect("Select yout prefered columns,Please select target column as the last columns",df.columns)
+				if len(new_data)!=0:
+					df1=df[new_data]
 				st.dataframe(df1)
 
-				X=df1.iloc[:,0:-1]
-				y=df1.iloc[:,-1]
+
+			X=df1.iloc[:,0:-1]
+			y=df1.iloc[:,-1]
 
 			seed=st.sidebar.slider('Seed',1,200)
-			classifier_name=st.sidebar.selectbox('Select your preffered classifier',('KNN','SVM','LR','Naive_bayes','Decision trees'))
+			classifier_name=st.sidebar.selectbox('Select your preffered classifier',('KNN','SVM','LR','Naive bayes','Decision trees','Gradient Boost'))
 
 			def add_parameter(name_of_clf):
 				param=dict()
