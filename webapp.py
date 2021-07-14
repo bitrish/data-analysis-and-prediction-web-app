@@ -1,11 +1,13 @@
 #importing all neccessary libraries
 
 import streamlit as st#for building the webapp
+import streamlit.components as stc
+
 import numpy as np
 import pandas as pd#for loading datasets
 import seaborn as sns#for plotting 
 import matplotlib.pyplot as plt#for plotting
-import time
+
 
 
 
@@ -14,6 +16,10 @@ from sklearn import model_selection
 from sklearn import datasets
 
 
+#for file dowloads feature 
+import base64
+import time
+timestr=time.strftime("%Y%m%d-%H%M%S")
 
 #for training the model on differnt algortihms
 from sklearn.tree import DecisionTreeClassifier
@@ -27,6 +33,9 @@ from sklearn.linear_model import LogisticRegression
 #for calculating accuracy and making confusion matrix
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
+
+#for computing missing values
+from sklearn.impute import SimpleImputer
 
 
 
@@ -55,8 +64,6 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 def main():
 	activities=['EDA📈','Visualisation 📊','Model🛠','About App📱','Contact Us 📞']
 	option=st.sidebar.selectbox('Select Option:',activities)
-
-
 
 
 
@@ -109,8 +116,36 @@ def main():
 				if st.checkbox("Visualise null values in columns"):
 					st.write(sns.heatmap(df1.isnull(),yticklabels=False,cbar=False,cmap='viridis'))
 					st.pyplot()
-                
 
+
+			if st.checkbox("take care of missing values"):
+				X=df1.iloc[:,:-1].values
+				y=df1.iloc[:,-1].values
+
+				
+				strategy=['mean', 'median', 'most_frequent']
+				selected_strategy=st.selectbox('Select On what strategy you want to fill your missing values',strategy)
+				st.success("Congracts your missing values are filled with {}".format(selected_strategy))
+				new=np.column_stack((X,y))
+				dff=pd.DataFrame.from_records(new)
+				
+				
+
+
+
+                
+                
+				if st.checkbox("Download the csv file with filled missing values"):
+					csvfile= df1.to_csv()
+					b64= base64.b64encode(csvfile.encode()).decode()
+					new_filename= "new_csv_file_{}_.CSV". format(timestr)
+					st.markdown ("#### Download File ###")
+					href =f'<a href="data: file/csv;base64, {b64}" download="{new_filename}">Click Here!!</a>'
+					st.markdown (href, unsafe_allow_html=True)
+                    
+                    
+                    
+                    
             #show columns data types
 			if st.checkbox("Display columns data types"):
 				st.write(df1.dtypes)
@@ -247,10 +282,12 @@ def main():
 
 			X=df1.iloc[:,0:-1]
 			y=df1.iloc[:,-1]
-
-			seed=st.sidebar.slider('Seed',1,200)
+			imputer=SimpleImputer(missing_values=np.nan,strategy='mean')
+			imputer.fit(X[:,0:-1])
+			X[:,0:-1]=imputer.transform(X[:,0:-1])
+            #used to fix the set of train test split  every time we perfrom train test split function
+			seed=st.sidebar.slider('Random state Seed',1,200)
 			classifier_name=st.sidebar.selectbox('Select your preffered classifier',('KNN','SVM','LR','Naive bayes','Decision trees','Gradient Boost'))
-
 			def add_parameter(name_of_clf):
 				param=dict()
 				if name_of_clf=='SVM':
