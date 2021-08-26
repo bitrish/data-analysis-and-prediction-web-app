@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt#for plotting
 from sklearn.model_selection import train_test_split#for splitting the data sets ito training and test
 from sklearn import model_selection
 from sklearn import datasets
+from pandas_profiling import ProfileReport
+from streamlit_pandas_profiling import st_profile_report
 
 
 #for file dowloads feature 
@@ -62,7 +64,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 #main function-streamlit structure design
 def main():
-	activities=['EDA📈','Visualisation 📊','Model🛠','About App📱','Contact Us 📞']
+	activities=['EDA📈','Visualisation 📊','Feature Engineering⛏','Model🛠','About App📱','Contact Us 📞']
 	option=st.sidebar.selectbox('Select Option:',activities)
 
 
@@ -170,10 +172,13 @@ def main():
 			if st.checkbox("Display correation between columns"):
 				st.write(df1.corr())
 
-			#if st.checkbox("Create profile report"):
+			if st.checkbox("Create profile report"):
 				pr=ProfileReport(df1,explorative=True)
-				st.write("Pandas profiling report")
-				st_profile_report(pr)#
+				st.header("**Pandas profiling report**")
+				st_profile_report(pr)
+			
+
+
 
 
 
@@ -184,7 +189,7 @@ def main():
 	elif option=='Visualisation 📊':
 		st.subheader("Data Visualisation")
 		st.info("Only CSV formats datasets are supported for now")
-		data=st.file_uploader("Upload Your Dataset",type=['csv','xlsx','txt','json'])
+		data=st.file_uploader("Upload Your Dataset",type=['csv'])
 		if data is not None:
 			st.success("Data has been loaded suceesfully")
 			df=pd.read_csv(data)
@@ -257,8 +262,27 @@ def main():
 
 
 
+   #Feature Engineering
+	elif option=='Feature Engineering⛏':
+		st.markdown("""
+		## Feature Engineering
+        """)
+		st.info("Only CSV formats datasets are supported for now")
+		data=st.file_uploader("Upload Your Dataset",type=['csv'])
+		if data is not None:
+			st.success("Data has been loaded suceesfully")
+			df=pd.read_csv(data)
+			df1=df
 
-#model building part
+
+            #showing data
+			if st.checkbox("Show Dataset"):
+				number=st.number_input("No of rows to view",1,100000)
+				st.dataframe(df1.head(number))
+
+
+
+    #Model building
 	elif option=='Model🛠':
 		st.subheader("Build your own model with different classifiers")
 		st.info("Only CSV formats datasets are supported for now")
@@ -282,19 +306,21 @@ def main():
 
 			X=df1.iloc[:,0:-1]
 			y=df1.iloc[:,-1]
-			imputer=SimpleImputer(missing_values=np.nan,strategy='mean')
-			imputer.fit(X[:,0:-1])
-			X[:,0:-1]=imputer.transform(X[:,0:-1])
+			
+			#imputer=SimpleImputer(missing_values=np.nan,strategy='mean')
+			#imputer.fit(X[:,0:-1])
+			#X[:,0:-1]=imputer.transform(X[:,0:-1])
             #used to fix the set of train test split  every time we perfrom train test split function
+
 			seed=st.sidebar.slider('Random state Seed',1,200)
-			classifier_name=st.sidebar.selectbox('Select your preffered classifier',('KNN','SVM','LR','Naive bayes','Decision trees','Gradient Boost'))
+			classifier_name=st.sidebar.selectbox('Select your preffered classifier',('KNN','SVM','LR','Naive bayes','Decision trees'))
 			def add_parameter(name_of_clf):
 				param=dict()
 				if name_of_clf=='SVM':
-					C=st.sidebar.slider('C',1,15)
+					C=st.sidebar.slider('C',1,100)
 					param['C']=C;
 				if name_of_clf=='KNN':
-					K=st.sidebar.slider('K',1,15)
+					K=st.sidebar.slider('K',1,100)
 					param['K']=K;
 				return param
 
@@ -325,13 +351,15 @@ def main():
 			clf.fit(X_train,y_train)
 
 			y_pred=clf.predict(X_test)
-			st.write("Predictions:",y_pred)
+			st.write("Predictions on the x_test data:",y_pred)
 			accuracy=accuracy_score(y_test,y_pred)
 			st.write("Name of classifier:", classifier_name)
-			st.write("Accuracy:",accuracy)
+			st.write("Accuracy of the Model:",accuracy)
 			if st.checkbox("Build Confusion matrix"):
 				acc=confusion_matrix(y_test,y_pred)
 				acc
+			#if st.write("Make Prediction on a new x data"):
+
 
 
 
@@ -370,3 +398,13 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 if __name__ == '__main__':
 	main()
+
+
+    
+    
+
+		
+
+
+    
+	
