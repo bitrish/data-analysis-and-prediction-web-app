@@ -369,7 +369,7 @@ def main():
 					grid=GridSearchCV(clf,param_grid=param_dict,n_jobs=-1)
 					grid.fit(X_train,y_train)
 					st.write(grid.best_score_)
-					if st.write("Get the best parameter value"):
+					if st.checkbox("Get the best parameter value"):
 						st.write(grid.best_params_)
 					
 
