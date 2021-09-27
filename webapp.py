@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt#for plotting
 from sklearn.model_selection import train_test_split#for splitting the data sets ito training and test
 from sklearn import model_selection
 from sklearn import datasets
-#from pandas_profiling import ProfileReport
-#from streamlit_pandas_profiling import st_profile_report
+from pandas_profiling import ProfileReport
+from streamlit_pandas_profiling import st_profile_report
 
 
 #for file dowloads feature 
@@ -148,10 +148,10 @@ def main():
 				
 
 
-			#if st.checkbox("Create profile report"):
-				#pr=ProfileReport(df1,explorative=True)
-				#st.header("**Pandas profiling report**")
-				#st_profile_report(pr)
+			if st.checkbox("Create profile report"):
+				pr=ProfileReport(df1,explorative=True)
+				st.header("**Pandas profiling report**")
+				st_profile_report(pr)
 			
 
 
@@ -372,15 +372,7 @@ def main():
 
 
 
-            
-
-
-
-
-#Contact Us part
-	else:
-		st.write("dhhhgh")
-
+          
 
 hide_streamlit_style = """
             <style>
