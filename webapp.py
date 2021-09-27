@@ -45,7 +45,7 @@ from sklearn.impute import SimpleImputer
 #<div style="background-color:grey">st.title('Data Analysis and Prediction ML Webapp')</div>
 #"""
 #st.markdown(html_temp,unsafe_allow_html=True)
-st.title('Data Analysis and Prediction ML Webapp')
+st.title('Data Analysis and Prediction Web Application')
 
 
 #progress bar
