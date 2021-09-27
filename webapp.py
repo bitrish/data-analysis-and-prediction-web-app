@@ -325,6 +325,9 @@ def main():
 				if name_of_clf=='KNN':
 					K=st.sidebar.slider('K',1,100)
 					param['K']=K;
+				if name_of_clf=='Decision trees':
+					max_depth=st.sidebar.slider('max_depth',1,100)
+					param['max_depth']=max_depth;
 				return param
 
 			param=add_parameter(classifier_name)
@@ -341,7 +344,7 @@ def main():
 				elif name_of_clf=='Naive bayes':
 					clf=GaussianNB()
 				elif name_of_clf=='Decision trees':
-					clf=DecisionTreeClassifier()
+					clf=DecisionTreeClassifier(max_depth=param['max_depth'])
 				else:
 					st.warning("Select your choice of algorithm")
 
