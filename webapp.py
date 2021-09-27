@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt#for plotting
 
 
 from sklearn.model_selection import train_test_split#for splitting the data sets ito training and test
+from sklearn.model_selection import GridSearchCV
 from sklearn import model_selection
 from sklearn import datasets
 #from pandas_profiling import ProfileReport
@@ -362,6 +363,16 @@ def main():
 			st.write("Name of classifier:", classifier_name)
 			if st.checkbox("Calculate acuuracy of the model"):
 				st.write("Accuracy of the Model:",accuracy)
+			if classifier_name=='Decision trees':
+				if st.write("Apply grid search CV to find the best parameter values for the model"):
+					param_dict={"max_depth":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]}
+					grid=GridSearchCV(model,param_grid=param_dict,n_jobs=-1)
+					grid.fit(X_train,y_train)
+					grid.best_score_
+					if st.write("Get the best parameter value"):
+						grid.best_params_
+					
+
 			if st.checkbox("Build Confusion matrix"):
 				acc=confusion_matrix(y_test,y_pred)
 				acc
