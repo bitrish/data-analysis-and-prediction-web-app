@@ -372,14 +372,7 @@ def main():
 
 
 
-            
-
-
-
-
-#Contact Us part
-	else:
-		st.write("dhhhgh")
+           
 
 
 hide_streamlit_style = """
