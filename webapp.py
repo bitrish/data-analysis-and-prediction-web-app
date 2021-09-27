@@ -366,7 +366,7 @@ def main():
 			if classifier_name=='Decision trees':
 				if st.checkbox("Apply grid search CV to find the best parameter values for the model"):
 					param_dict={"max_depth":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]}
-					grid=GridSearchCV(model,param_grid=param_dict,n_jobs=-1)
+					grid=GridSearchCV(clf,param_grid=param_dict,n_jobs=-1)
 					grid.fit(X_train,y_train)
 					st.write(grid.best_score_)
 					if st.write("Get the best parameter value"):
