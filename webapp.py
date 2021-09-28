@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd#for loading datasets
 import seaborn as sns#for plotting 
 import matplotlib.pyplot as plt#for plotting
+import pandas_profiling
 
 
 
@@ -15,7 +16,6 @@ from sklearn.model_selection import train_test_split#for splitting the data sets
 from sklearn.model_selection import GridSearchCV
 from sklearn import model_selection
 from sklearn import datasets
-from pandas_profiling import ProfileReport
 from streamlit_pandas_profiling import st_profile_report
 
 
@@ -150,7 +150,7 @@ def main():
 
 
 			if st.checkbox("Create profile report"):
-				pr=ProfileReport(df1,explorative=True)
+				pr=df1.profile_report()
 				st.header("**Pandas profiling report**")
 				st_profile_report(pr)
 			
