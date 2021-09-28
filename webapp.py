@@ -7,15 +7,14 @@ import numpy as np
 import pandas as pd#for loading datasets
 import seaborn as sns#for plotting 
 import matplotlib.pyplot as plt#for plotting
-import pandas_profiling
 
 
 
 
 from sklearn.model_selection import train_test_split#for splitting the data sets ito training and test
-from sklearn.model_selection import GridSearchCV
 from sklearn import model_selection
 from sklearn import datasets
+from pandas_profiling import ProfileReport
 from streamlit_pandas_profiling import st_profile_report
 
 
@@ -46,7 +45,7 @@ from sklearn.impute import SimpleImputer
 #<div style="background-color:grey">st.title('Data Analysis and Prediction ML Webapp')</div>
 #"""
 #st.markdown(html_temp,unsafe_allow_html=True)
-st.title('Data Analysis and Prediction Web Application')
+st.title('Data Analysis and Prediction ML Webapp')
 
 
 #progress bar
@@ -65,7 +64,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 #main function-streamlit structure design
 def main():
-	activities=['EDA📈','Visualisation 📊','Feature Engineering⛏','Model🛠','Contact Us 📞']
+	activities=['EDA📈','Visualisation 📊','Feature Engineering⛏','Model🛠','About App📱','Contact Us 📞']
 	option=st.sidebar.selectbox('Select Option:',activities)
 
 
@@ -99,22 +98,6 @@ def main():
 			if st.checkbox("Display Columns Names"):
 				st.write(df1.columns)
 
-			#show columns data types
-			if st.checkbox("Display columns data types"):
-				st.write(df1.dtypes)
-
-
-			#show value counts of target column
-			if st.checkbox("Show values counts of target column"):
-				st.warning("Make sure that your target/output variable is in the last column")
-				st.text("Counts")
-				st.write(df1.iloc[:,-1].value_counts())
-
-
-			#show the correlation of data columns
-			if st.checkbox("Display correation between columns"):
-				st.write(df1.corr())
-
 
 
 
@@ -137,9 +120,46 @@ def main():
 					st.pyplot()
 
 
-			
-                       
-   
+			if st.checkbox("take care of missing values"):
+				X=df1.iloc[:,:-1].values
+				y=df1.iloc[:,-1].values
+
+				
+				strategy=['mean', 'median', 'most_frequent']
+				selected_strategy=st.selectbox('Select On what strategy you want to fill your missing values',strategy)
+				st.success("Congracts your missing values are filled with {}".format(selected_strategy))
+				new=np.column_stack((X,y))
+				dff=pd.DataFrame.from_records(new)
+				
+				
+
+
+
+                
+                
+				if st.checkbox("Download the csv file with filled missing values"):
+					csvfile= df1.to_csv()
+					b64= base64.b64encode(csvfile.encode()).decode()
+					new_filename= "new_csv_file_{}_.CSV". format(timestr)
+					st.markdown ("#### Download File ###")
+					href =f'<a href="data: file/csv;base64, {b64}" download="{new_filename}">Click Here!!</a>'
+					st.markdown (href, unsafe_allow_html=True)
+                    
+                    
+                    
+                    
+            #show columns data types
+			if st.checkbox("Display columns data types"):
+				st.write(df1.dtypes)
+
+
+			#show value counts of target column
+			if st.checkbox("Show values counts of target column"):
+				st.warning("Make sure that your target/output variable is in the last column")
+				st.text("Counts")
+				st.write(df1.iloc[:,-1].value_counts())
+            	
+
             #show the summery of dataset
 			if st.checkbox("Display Summery"):
 				if df1.empty:
@@ -148,9 +168,12 @@ def main():
 					st.write(df1.describe().T)
 				
 
+            #show the correlation of data columns
+			if st.checkbox("Display correation between columns"):
+				st.write(df1.corr())
 
 			if st.checkbox("Create profile report"):
-				pr=df1.profile_report()
+				pr=ProfileReport(df1,explorative=True)
 				st.header("**Pandas profiling report**")
 				st_profile_report(pr)
 			
@@ -258,33 +281,6 @@ def main():
 				st.dataframe(df1.head(number))
 
 
-			if st.checkbox("take care of missing values"):
-				X=df1.iloc[:,:-1].values
-				y=df1.iloc[:,-1].values
-
-				
-				strategy=['mean', 'median', 'most_frequent']
-				selected_strategy=st.selectbox('Select On what strategy you want to fill your missing values',strategy)
-				st.success("Congracts your missing values are filled with {}".format(selected_strategy))
-				new=np.column_stack((X,y))
-				dff=pd.DataFrame.from_records(new)
-				
-				
-
-
-
-                
-                
-				if st.checkbox("Download the csv file with filled missing values"):
-					csvfile= df1.to_csv()
-					b64= base64.b64encode(csvfile.encode()).decode()
-					new_filename= "new_csv_file_{}_.CSV". format(timestr)
-					st.markdown ("#### Download File ###")
-					href =f'<a href="data: file/csv;base64, {b64}" download="{new_filename}">Click Here!!</a>'
-					st.markdown (href, unsafe_allow_html=True)
-                    
-
-
 
     #Model building
 	elif option=='Model🛠':
@@ -326,9 +322,6 @@ def main():
 				if name_of_clf=='KNN':
 					K=st.sidebar.slider('K',1,100)
 					param['K']=K;
-				if name_of_clf=='Decision trees':
-					max_depth=st.sidebar.slider('max_depth',1,100)
-					param['max_depth']=max_depth;
 				return param
 
 			param=add_parameter(classifier_name)
@@ -342,12 +335,12 @@ def main():
 					clf=KNeighborsClassifier(n_neighbors=param['K'])
 				elif name_of_clf=='LR':
 					clf=LogisticRegression()
-				elif name_of_clf=='Naive bayes':
+				elif name_of_clf=='naive_bayes':
 					clf=GaussianNB()
 				elif name_of_clf=='Decision trees':
-					clf=DecisionTreeClassifier(max_depth=param['max_depth'])
+					clf=DecisionTreeClassifier()
 				else:
-					st.warning("Select your choice of algorithm")
+					St.warning("Select your choice of algorithm")
 
 				return clf
 
@@ -356,36 +349,16 @@ def main():
 
 			X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.2,random_state=seed)
 			clf.fit(X_train,y_train)
+
 			y_pred=clf.predict(X_test)
-			if st.checkbox("Make prediction on X_test data"):
-				st.write(y_pred)
+			st.write("Predictions on the x_test data:",y_pred)
 			accuracy=accuracy_score(y_test,y_pred)
 			st.write("Name of classifier:", classifier_name)
-			if st.checkbox("Calculate acuuracy of the model"):
-				st.write("Accuracy of the Model:",accuracy)
-			if classifier_name=='Decision trees':
-				if st.checkbox("Apply grid search CV to find the best accuracy for the model"):
-					param_dict={"max_depth":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]}
-					grid=GridSearchCV(clf,param_grid=param_dict,n_jobs=-1)
-					grid.fit(X_train,y_train)
-					st.write(grid.best_score_)
-					if st.checkbox("Get the best parameter value"):
-						st.write(grid.best_params_)
-			
-
-			if classifier_name=='SVM':
-				if st.checkbox("Apply grid search CV to find the best accuracy for the model"):
-					param_dict={"C":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]}
-					grid=GridSearchCV(clf,param_grid=param_dict,n_jobs=-1)
-					grid.fit(X_train,y_train)
-					st.write(grid.best_score_)
-					if st.checkbox("Get the best parameter value"):
-						st.write(grid.best_params_)		
-
+			st.write("Accuracy of the Model:",accuracy)
 			if st.checkbox("Build Confusion matrix"):
 				acc=confusion_matrix(y_test,y_pred)
 				acc
-			
+			#if st.write("Make Prediction on a new x data"):
 
 
 
@@ -393,9 +366,21 @@ def main():
 
 
 
+#About app part
+	elif option=='About App📱':
+		st.write("gfgwrfr")
+		
+
+		
+
+            
 
 
-           
+
+
+#Contact Us part
+	else:
+		st.write("dhhhgh")
 
 
 hide_streamlit_style = """
