@@ -15,8 +15,8 @@ from sklearn.model_selection import train_test_split#for splitting the data sets
 from sklearn.model_selection import GridSearchCV
 from sklearn import model_selection
 from sklearn import datasets
-#from pandas_profiling import ProfileReport
-#from streamlit_pandas_profiling import st_profile_report
+from pandas_profiling import ProfileReport
+from streamlit_pandas_profiling import st_profile_report
 
 
 #for file dowloads feature 
@@ -65,7 +65,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 #main function-streamlit structure design
 def main():
-	activities=['EDA📈','Visualisation 📊','Feature Engineering⛏','Model🛠']
+	activities=['EDA📈','Visualisation 📊','Feature Engineering⛏','Model🛠','Contact Us 📞']
 	option=st.sidebar.selectbox('Select Option:',activities)
 
 
@@ -149,10 +149,10 @@ def main():
 				
 
 
-			#if st.checkbox("Create profile report"):
-				#pr=ProfileReport(df1,explorative=True)
-				#st.header("**Pandas profiling report**")
-				#st_profile_report(pr)
+			if st.checkbox("Create profile report"):
+				pr=ProfileReport(df1,explorative=True)
+				st.header("**Pandas profiling report**")
+				st_profile_report(pr)
 			
 
 
@@ -364,7 +364,7 @@ def main():
 			if st.checkbox("Calculate acuuracy of the model"):
 				st.write("Accuracy of the Model:",accuracy)
 			if classifier_name=='Decision trees':
-				if st.checkbox("Apply grid search CV to find the best parameter values for the model"):
+				if st.checkbox("Apply grid search CV to find the best accuracy for the model"):
 					param_dict={"max_depth":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]}
 					grid=GridSearchCV(clf,param_grid=param_dict,n_jobs=-1)
 					grid.fit(X_train,y_train)
@@ -380,8 +380,7 @@ def main():
 					grid.fit(X_train,y_train)
 					st.write(grid.best_score_)
 					if st.checkbox("Get the best parameter value"):
-						st.write(grid.best_params_)	
-					
+						st.write(grid.best_params_)		
 
 			if st.checkbox("Build Confusion matrix"):
 				acc=confusion_matrix(y_test,y_pred)
