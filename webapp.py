@@ -65,7 +65,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 #main function-streamlit structure design
 def main():
-	activities=['EDA📈','Visualisation 📊','Feature Engineering⛏','Model🛠','Contact Us 📞']
+	activities=['EDA📈','Visualisation 📊','Feature Engineering⛏','Model🛠']
 	option=st.sidebar.selectbox('Select Option:',activities)
 
 
