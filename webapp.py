@@ -56,9 +56,7 @@ for i in range(100):
 	progress.progress(i+1)
 
 
-st.markdown("""
-:sunglasses:
-""")
+
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 
